@@ -1,21 +1,8 @@
 ---
-import type { GetStaticPaths } from "astro";
-import ChapterList from "../../components/ChapterList.astro";
-import VolumeCover from "../../components/VolumeCover.astro";
-import VolumeInformation from "../../components/VolumeInformation.astro";
-import MainLayout from "../../layouts/MainLayout.astro";
-import {
-  getMangaChaptersByVolumeNumber,
-  getMangaVolumeByNumber,
-  getMangaVolumes,
-} from "../../lib/db";
+// removed db imports (disable database for Vercel build)
 
 export const getStaticPaths = (async () => {
-  const volumes = await getMangaVolumes();
-  const paths = volumes.map((volume) => ({
-    params: { volume: String(volume.number) },
-  }));
-  return paths;
+  return [];
 }) satisfies GetStaticPaths;
 
 const { volume: volumeNumber } = Astro.params;
@@ -24,26 +11,26 @@ if (!volumeNumber) {
   return Astro.redirect("/");
 }
 
-const volume = await getMangaVolumeByNumber(+volumeNumber);
-if (!volume) {
+const volume = null;
+const chaptersFromVolume = [];
+
+if (!volumeNumber) {
   return Astro.redirect("/");
 }
-
-const chaptersFromVolume = await getMangaChaptersByVolumeNumber(+volumeNumber);
 ---
 
 <MainLayout
-  tagline={`Volume ${volume.number}`}
+  tagline={`Volume ?`}
   metadata={{
-    title: `Read Vagabond Manga | Volume ${volume.number}`,
-    description: `Read Vagabond Volume ${volume.number} online for free. Contains ${volume.chapterCount} chapters (${volume.firstChapter}-${volume.lastChapter}). High-quality manga scans from Takehiko Inoue's masterpiece.`,
+    title: `Read Vagabond Manga | Volume ${"?"}`,
+    description: `Read Vagabond Volume ${"?"} online for free. Contains ${0} chapters (${0}-${0}). High-quality manga scans from Takehiko Inoue's masterpiece.`,
     keywords: [
-      `Vagabond Volume ${volume.number}`,
-      `Vagabond chapters ${volume.firstChapter}-${volume.lastChapter}`,
+      `Vagabond Volume ${"?"}`,
+      `Vagabond chapters ${0}-${0}`,
       "Takehiko Inoue",
       "read manga online",
     ],
-    endpoint: `/volume-${volume.number}`,
+    endpoint: `/volume-${"?"}`,
   }}
 >
   <main class="pt-20">
@@ -53,17 +40,17 @@ const chaptersFromVolume = await getMangaChaptersByVolumeNumber(+volumeNumber);
       <div class="max-w-7xl mx-auto px-4 md:px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-15 h-full">
           <div class="flex flex-col lg:w-80">
-            <VolumeCover volume={volume.number} />
+            <VolumeCover volume={"?"} />
             <VolumeInformation
-              volume={volume.number}
-              chapterCount={volume.chapterCount}
-              firstChapter={volume.firstChapter ?? 0}
-              lastChapter={volume.lastChapter ?? 0}
-              releaseDate={volume.releaseDate}
+              volume={"?"}
+              chapterCount={0}
+              firstChapter={0 ?? 0}
+              lastChapter={0 ?? 0}
+              releaseDate={0}
             />
           </div>
           <ChapterList
-            volumeNumber={volume.number}
+            volumeNumber={"?"}
             chapters={chaptersFromVolume}
           />
         </div>
